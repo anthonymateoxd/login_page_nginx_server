@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: login-page-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: login-page-nginx
+  template:
+    metadata:
+      labels:
+        app: login-page-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: mateouni/my-nginx-server:v3
+          ports:
+            - containerPort: 80
