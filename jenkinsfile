@@ -1,25 +1,33 @@
-pipeline{
+pipeline {
     agent any
-    stages{
-        stage('Checkout Code'){
-            steps{
-                git 'https://github.com/Parth2k3/test-flask'
+
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image...'
+                sh '''
+                    docker build -t login_page_nginx_server .
+                '''
             }
         }
-        stage('Build'){
-            steps{
-                sh 'echo "building the app"'
+
+        stage('Run Container') {
+            steps {
+                echo 'Running container on port 8081...'
+                sh '''
+                    docker ps -q --filter "ancestor=login_page_nginx_server" | xargs -r docker stop
+                    docker run -d -p 8081:80 login_page_nginx_server
+                '''
             }
         }
-        stage('Test'){
-            steps{
-                sh 'echo "Running tests"'
-            }
+    }
+
+    post {
+        success {
+            echo '✅ Build completed successfully!'
         }
-        stage('Deploy'){
-            steps{
-                sh 'echo "deploying"'
-            }
+        failure {
+            echo '❌ Build failed!'
         }
     }
 }
