@@ -26,4 +26,10 @@
 # CMD ["nginx", "-g", "daemon off;"]
 FROM nginx:alpine
 
+# borrar config default
+RUN rm /etc/nginx/conf.d/default.conf
+
+# copiar la tuya
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
